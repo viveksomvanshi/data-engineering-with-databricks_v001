@@ -127,6 +127,8 @@ display(mattress_df)
 
 size_df = mattress_df.groupBy("email").agg(collect_set("size").alias("size options"))
 
+size_df = size_df.withColumn("no_of_options", size(col("size options"))).where(col("no_of_options") > 1)
+
 display(size_df)
 
 # COMMAND ----------

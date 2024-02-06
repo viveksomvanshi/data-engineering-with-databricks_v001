@@ -64,6 +64,7 @@ limit_events_df = (df
 
 limit_events_df.explain(True)
 
+
 # COMMAND ----------
 
 # DBTITLE 0,--i18n-cc9b8d61-bb89-4961-819d-d135ec4f4aac

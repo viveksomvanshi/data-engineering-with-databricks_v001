@@ -65,9 +65,17 @@ display(events_df)
 # COMMAND ----------
 
 # TODO
+# from pyspark.sql.functions import *
+# converted_users_df = (sales_df.FILL_IN
+#                      )
+# display(converted_users_df)
+
 from pyspark.sql.functions import *
 
-converted_users_df = (sales_df.FILL_IN
+converted_users_df = (sales_df
+                      .select("email")
+                      .distinct()
+                      .withColumn("converted", lit(True))
                      )
 display(converted_users_df)
 
@@ -107,8 +115,18 @@ print("All test pass")
 # COMMAND ----------
 
 # TODO
-conversions_df = (users_df.FILL_IN
-                 )
+# conversions_df = (users_df.FILL_IN
+#                  )
+# display(conversions_df)
+
+from pyspark.sql.functions import *
+
+conversions_df = (users_df
+                  .join(converted_users_df, on=["email"], how="outer")
+                  .filter(col("email").isNotNull())
+                  .na.fill(False)
+                )
+
 display(conversions_df)
 
 # COMMAND ----------
@@ -151,7 +169,15 @@ print("All test pass")
 # COMMAND ----------
 
 # TODO
-carts_df = (events_df.FILL_IN
+# carts_df = (events_df.FILL_IN
+# )
+# display(carts_df)
+
+carts_df = (events_df
+            .withColumn("items", explode(col("items")))
+            .groupBy(col("user_id"))
+            .agg(collect_set(col("items.item_id"))
+                 .alias("cart"))
 )
 display(carts_df)
 
@@ -189,7 +215,11 @@ print("All test pass")
 # COMMAND ----------
 
 # TODO
-email_carts_df = conversions_df.FILL_IN
+# email_carts_df = conversions_df.FILL_IN
+# display(email_carts_df)
+
+email_carts_df = (conversions_df
+                  .join(carts_df, on=["user_id"], how="left_outer"))
 display(email_carts_df)
 
 # COMMAND ----------
@@ -233,8 +263,15 @@ print("All test pass")
 # COMMAND ----------
 
 # TODO
-abandoned_carts_df = (email_carts_df.FILL_IN
+# abandoned_carts_df = (email_carts_df.FILL_IN
+# )
+# display(abandoned_carts_df)
+
+abandoned_carts_df = (email_carts_df
+                      .filter(col("converted") == False)
+                      .filter(col("cart").isNotNull())
 )
+
 display(abandoned_carts_df)
 
 # COMMAND ----------
@@ -266,8 +303,24 @@ print("All test pass")
 
 # COMMAND ----------
 
+no_of_ab_carts_with_all_items = abandoned_carts_df.count()
+no_of_ab_carts_with_each_item = abandoned_carts_df.withColumn("cart_item", explode(col("cart"))).count()
+
+print(no_of_ab_carts_with_all_items)
+print(no_of_ab_carts_with_each_item)
+
+# COMMAND ----------
+
 # TODO
-abandoned_items_df = (abandoned_carts_df.FILL_IN
+# abandoned_items_df = (abandoned_carts_df.FILL_IN
+#                      )
+# display(abandoned_items_df)
+
+abandoned_items_df = (abandoned_carts_df
+                      .withColumn("items", explode("cart"))
+                      .groupBy("items")
+                      .count()
+                      .sort("items")
                      )
 display(abandoned_items_df)
 

@@ -155,6 +155,12 @@ SELECT count(*) FROM deduped_users
 
 -- COMMAND ----------
 
+-- MAGIC %python
+-- MAGIC
+-- MAGIC display(dedupedDF)
+
+-- COMMAND ----------
+
 -- DBTITLE 0,--i18n-5e2c98db-ea2d-44dc-b2ae-680dfd85c74b
 -- MAGIC %md
 -- MAGIC
@@ -279,7 +285,7 @@ FROM (
 -- COMMAND ----------
 
 -- MAGIC %python
--- MAGIC DA.cleanup()
+-- MAGIC # DA.cleanup()
 
 -- COMMAND ----------
 

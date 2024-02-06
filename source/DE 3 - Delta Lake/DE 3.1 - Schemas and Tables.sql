@@ -141,6 +141,10 @@ DROP TABLE managed_table;
 
 -- COMMAND ----------
 
+
+
+-- COMMAND ----------
+
 -- MAGIC %python 
 -- MAGIC schema_default_location = spark.sql(f"DESCRIBE SCHEMA {DA.schema_name}_default_location").collect()[3].database_description_value
 -- MAGIC print(schema_default_location)

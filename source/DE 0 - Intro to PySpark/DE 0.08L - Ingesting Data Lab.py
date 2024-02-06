@@ -37,11 +37,24 @@
 
 # TODO
 
+# single_product_csv_file_path = f"{DA.paths.products_csv}/part-00000-tid-1663954264736839188-daf30e86-5967-4173-b9ae-d1481d3506db-2367-1-c000.csv"
+# print(FILL_IN)
+
+# products_csv_path = DA.paths.products_csv
+# products_df = FILL_IN
+
+# products_df.printSchema()
+
 single_product_csv_file_path = f"{DA.paths.products_csv}/part-00000-tid-1663954264736839188-daf30e86-5967-4173-b9ae-d1481d3506db-2367-1-c000.csv"
-print(FILL_IN)
+print(dbutils.fs.head(single_product_csv_file_path))
 
 products_csv_path = DA.paths.products_csv
-products_df = FILL_IN
+products_df = (spark
+               .read
+               .option("inferSchema", True)
+               .option("header", True)
+               .csv(products_csv_path)
+               )
 
 products_df.printSchema()
 
@@ -68,9 +81,20 @@ print("All test pass")
 # COMMAND ----------
 
 # TODO
-user_defined_schema = FILL_IN
+# user_defined_schema = FILL_IN
+# products_df2 = FILL_IN
+from pyspark.sql.types import StructType, StructField, ArrayType, StringType, IntegerType, DoubleType, LongType
 
-products_df2 = FILL_IN
+products_csv_path = DA.paths.products_csv
+
+user_defined_schema = StructType([StructField("item_id", StringType(), True),
+                                  StructField("name", StringType(), True),
+                                  StructField("price", DoubleType(), True)])
+products_df2 = (spark
+                .read
+                .option("header", True)
+                .schema(user_defined_schema)
+                .csv(products_csv_path))
 
 # COMMAND ----------
 
@@ -104,9 +128,15 @@ print("All test pass")
 # COMMAND ----------
 
 # TODO
-ddl_schema = FILL_IN
+ddl_schema = "`item_id` STRING, `name` STRING, `price` DOUBLE"
 
-products_df3 = FILL_IN
+products_csv_path = DA.paths.products_csv
+
+products_df3 = (spark
+                .read
+                .option("header", True)
+                .schema(ddl_schema)
+                .csv(products_csv_path))
 
 # COMMAND ----------
 
@@ -131,8 +161,15 @@ print("All test pass")
 # COMMAND ----------
 
 # TODO
+# products_output_path = DA.paths.working_dir + "/delta/products"
+# products_df.FILL_IN
+
 products_output_path = DA.paths.working_dir + "/delta/products"
-products_df.FILL_IN
+(products_df
+ .write
+ .format("delta")
+ .mode("overwrite")
+ .save(products_output_path))
 
 # COMMAND ----------
 

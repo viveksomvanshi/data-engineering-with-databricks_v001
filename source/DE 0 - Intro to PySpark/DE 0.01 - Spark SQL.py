@@ -87,6 +87,17 @@ display(spark
 
 # COMMAND ----------
 
+from pyspark.sql.functions import col
+
+# products_price_less_than_200_df = spark.table("products") 
+# display(products_price_less_than_200_df.where(col('price') < 200).orderBy(col('price')))
+
+display(spark.table("products")
+             .where(col("price")<200)
+             .orderBy(col("Price")))
+
+# COMMAND ----------
+
 # DBTITLE 0,--i18n-bb02bfff-cf98-4639-af21-76bec5c8d95b
 # MAGIC %md
 # MAGIC
@@ -306,6 +317,7 @@ budget_df.count()
 # COMMAND ----------
 
 budget_df.collect()
+
 
 # COMMAND ----------
 
